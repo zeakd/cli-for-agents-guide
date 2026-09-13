@@ -37,6 +37,43 @@ For ordinary arguments, a framework should generate parsing, validation, help, a
 
 A specialized expression language may need a custom parser. That escape hatch must still describe its grammar and enforce the same input and error contracts. Parser implementation is a choice; agreement between explanation and behavior is the requirement.
 
+## Accept complex input
+
+Keep common input short with arguments and options. Files or an explicitly selected stdin path may be more suitable for nested configuration or collections of items.
+
+```sh
+tool deploy create --name api --region seoul
+tool deploy create --input-file deployment.json
+```
+
+Describe the input format and provide examples. If files and options can be combined, define their precedence or reject conflicts. Identify invalid values by their location within the input:
+
+```text
+Invalid value at containers[0].healthcheck.intervalSeconds
+Expected: a positive integer
+Received: -1
+```
+
+## Compose steps that need no new decision
+
+Do not require the agent to intervene between steps that need no new decision. Provide compatible input and output contracts, and include common combinations in usage knowledge.
+
+```sh
+tool deploy export api |
+  tool deploy validate --input-file -
+```
+
+In this example, `export` writes the deployment configuration itself and `validate` accepts that format. The `-` value explicitly selects stdin. The agent does not need to read and copy the intermediate JSON into another call.
+
+| Relationship between steps | Composition |
+| --- | --- |
+| The next step accepts the output format and its completeness guarantees | A pipe with the required completeness checks |
+| The next step depends only on the success guaranteed by the previous command | Run it after that success; wait or query status if acceptance alone is insufficient |
+| Operations are independent | Parallel execution |
+| The result determines the target or method | Inspect the result before choosing the next call |
+
+Do not skip necessary decisions just to reduce calls. Reduce the cost of making the agent reconsider an already determined procedure. [Chapter 4](04-results-and-presentation.md#output-for-composition) covers compatible payloads and failure handling.
+
 ---
 
 [Contents](index.md) · [Previous](02-discovery-and-skills.md) · [Next](04-results-and-presentation.md)

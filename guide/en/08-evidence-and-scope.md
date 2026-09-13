@@ -21,6 +21,10 @@ Input validation, observable state, and testable dependencies were useful before
 
 Choosing between CLI, MCP, or other interfaces depends on the environment. This guide describes the surface to provide when choosing a CLI. It does not prescribe an agent harness, compatibility policy, language, or package manager.
 
+## Reading the examples
+
+Command, response, and layout examples make design choices concrete. Their command names, field names, and assembly APIs are not a universal specification or a statement of current TypeScript package support. Shell examples illustrate composition; [chapter 4](04-results-and-presentation.md#output-for-composition) explains why a pipe alone does not guarantee complete input or successful execution.
+
 ## Reference implementation coverage
 
 The [TypeScript implementation](https://github.com/zeakd/cli-for-agents-ts) is a concrete example, not a claim that all recommendations here are already implemented. The following snapshot is pinned to [revision 701eb6450a181640e63a47a281a4752cb6644e0c](https://github.com/zeakd/cli-for-agents-ts/tree/701eb6450a181640e63a47a281a4752cb6644e0c). Later revisions may differ.

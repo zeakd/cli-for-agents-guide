@@ -34,6 +34,50 @@ Require command descriptions and input contracts. Provide a default output contr
 
 A framework can detect missing declarations and compare generated surfaces. It cannot establish that prose is useful merely because a skill file exists or contains a command name. Review authored guidance and verify its behavioral examples. Executable documentation examples and output fixtures can help keep promises aligned with behavior.
 
+## Assemble usage knowledge
+
+Usage knowledge need not live in one separately maintained document. Keep declarations and related knowledge close to each command, then assemble them around the caller's task.
+
+```text
+deploy/
+├── Shared usage knowledge
+│   └── Workflow for investigating a failed deployment
+├── list
+│   ├── Input and output declarations
+│   └── Finding the deployment to investigate
+├── inspect
+│   ├── Input and output declarations
+│   └── Interpreting its state
+└── logs
+    ├── Input and output declarations
+    └── Narrowing down failure logs
+```
+
+| Content | Examples | Maintenance |
+| --- | --- | --- |
+| Declared facts | Command names, arguments, defaults, output formats | Generate from declarations |
+| Authored knowledge | Applicability, interpretation, cautions, command relationships | Write and review |
+
+A task guide can reference the declarations and knowledge fragments it needs. If one command appears in several skills, avoid separately maintaining copies of the same description.
+
+Concatenating command descriptions does not by itself explain a workflow. Authors still supply connections: which commands to combine, in what order, and where a result requires a new decision. Keep knowledge close to the feature when authoring and organize it around the task when reading. File layout and assembly APIs are implementation choices.
+
+## Evaluate usage knowledge
+
+Check usage knowledge for discovery, use, and accuracy, not only presence.
+
+| Level | Question |
+| --- | --- |
+| Discovery | Can names and descriptions lead the caller to the relevant skill? |
+| Use | Can the caller construct correct invocations and combinations from the guidance? |
+| Accuracy | Do the instructions and examples match actual behavior? |
+
+Mechanical checks can find missing references, nonexistent commands, and incorrect example results. They cannot establish that the explanation is useful.
+
+Tools intended for agent use can also evaluate representative tasks, such as finding logs for a failed deployment. Observe whether the agent finds the relevant skill, avoids unrelated skills, and uses known combinations without unnecessarily splitting them into separate calls.
+
+Assess call count and elapsed time alongside correctness. Finishing quickly is not a good result if the agent skips a necessary check or changes the wrong target. Not every CLI needs the same evaluation infrastructure.
+
 ---
 
 [Contents](index.md) · [Previous](05-state-and-actions.md) · [Next](07-conditional-patterns.md)

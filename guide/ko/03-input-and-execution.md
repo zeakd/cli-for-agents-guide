@@ -37,6 +37,43 @@ tool report export sales --format csv
 
 특수한 표현식 문법은 별도 파서가 필요할 수 있다. 이 경우에도 문법을 설명하고 같은 입력·오류 계약을 지켜야 한다. 파서 구현은 선택이고, 설명과 동작의 일치는 요구사항이다.
 
+## 복잡한 입력을 받는다
+
+흔한 입력은 짧은 인자와 옵션으로 표현한다. 중첩된 설정이나 여러 항목처럼 복잡한 입력에는 파일이나 명시적인 stdin 경로가 더 적합할 수 있다.
+
+```sh
+tool deploy create --name api --region seoul
+tool deploy create --input-file deployment.json
+```
+
+지원하는 입력 형식과 예제를 제공한다. 파일과 옵션을 함께 받는다면 우선순위를 정하거나 충돌을 거절한다. 잘못된 값은 입력 안의 위치까지 알려준다.
+
+```text
+Invalid value at containers[0].healthcheck.intervalSeconds
+Expected: a positive integer
+Received: -1
+```
+
+## 새로운 판단이 필요 없는 단계는 조합한다
+
+새로운 판단이 필요 없는 단계 사이에는 에이전트의 개입을 요구하지 않는다. 서로 맞는 입력·출력 계약을 제공하고, 자주 쓰는 조합을 사용 지식에 포함한다.
+
+```sh
+tool deploy export api |
+  tool deploy validate --input-file -
+```
+
+이 예시에서 `export`는 배포 설정 자체를 출력하고, `validate`는 같은 형식을 받는다. `-`는 명시적으로 stdin을 선택한다. 에이전트가 중간 JSON을 읽고 다음 호출에 복사할 필요는 없다.
+
+| 단계 사이의 관계 | 조합 방법 |
+| --- | --- |
+| 다음 단계가 앞의 출력 형식과 완전성 보장을 받아들일 수 있다 | 필요한 완전성 검사를 갖춘 파이프 |
+| 앞 명령의 계약이 보장하는 성공만 확인하면 된다 | 그 성공 후 실행; 접수만으로 부족하면 대기하거나 상태 조회 |
+| 작업들이 서로 독립적이다 | 병렬 실행 |
+| 결과에 따라 대상이나 방법을 골라야 한다 | 결과를 확인한 뒤 다음 호출 결정 |
+
+호출 횟수를 줄이기 위해 필요한 판단까지 생략하지 않는다. 이미 결정된 절차를 다시 판단하게 만드는 비용을 줄인다. 연결 가능한 목적물과 실패 처리는 [4장](04-results-and-presentation.md#조합할-수-있는-출력)에서 다룬다.
+
 ---
 
 [목차](index.md) · [이전](02-discovery-and-skills.md) · [다음](04-results-and-presentation.md)

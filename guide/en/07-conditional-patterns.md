@@ -24,6 +24,8 @@ Long-running work may expose status, waiting, results, and cancellation. A frame
 
 A stream is not a completed value. Once bytes have been written, a failure cannot retract them. Document completion and failure signaling, report errors separately from payload stdout, and preserve an honest account of partial output. Waiting for a known operation is distinct from unexpectedly opening an input prompt.
 
+A pipeline does not turn several commands into one transaction. Output or changes may already have occurred when it fails. Describe input completeness, intermediate failures, and the state left after cancellation according to the operation. See [chapter 4](04-results-and-presentation.md#output-for-composition).
+
 ## Shared resources
 
 When several callers use one resource, make the target explicit and consider concurrent access. Identifiers should resolve to the intended object rather than a changing UI focus or guessed list position.

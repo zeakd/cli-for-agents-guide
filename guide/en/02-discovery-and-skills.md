@@ -40,6 +40,28 @@ Help, skills, and schema must describe the running version. Shipping usage knowl
 
 Version alignment does not prove that authored instructions are accurate. Verify their examples and behavioral claims. Nor does rediscovery remove the need for compatibility: the tool's author chooses that policy according to its callers and distribution model.
 
+## Discover only what is needed
+
+Make the whole tool inspectable without requiring callers to read everything before using one part. For a large command set, show capabilities and their applicability first, then let callers narrow down to a command's contract.
+
+```sh
+tool
+tool deploy
+tool deploy inspect --help
+```
+
+The first call lists capabilities with short descriptions. The second lists deployment commands. The third explains one command's inputs, outputs, and examples.
+
+A tool can also offer an explicit full lookup:
+
+```sh
+tool schema --full
+```
+
+A complete schema is useful for tool audits or generating integrations. It can be saved to a file or filtered programmatically rather than loaded into the agent's context in full. Its availability does not make it a prerequisite for every task.
+
+Apply the same approach to skills: names and applicability first, then a selected skill and its references.
+
 ---
 
 [Contents](index.md) · [Previous](01-design-goals.md) · [Next](03-input-and-execution.md)
