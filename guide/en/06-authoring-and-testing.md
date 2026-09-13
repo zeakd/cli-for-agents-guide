@@ -8,7 +8,7 @@ Registries and feature folders are ways to implement this. A command need not fi
 
 ## Assembling usage knowledge
 
-Knowledge can live close to a feature and be assembled by task.
+The units used to maintain code can differ from those used to read instructions. Descriptions of `list`, `inspect`, and `logs` are easier to update near their commands, while a caller investigating a failed deployment needs guidance connecting all three. A framework can compose task guides by referencing command declarations and knowledge.
 
 ```text
 deploy/

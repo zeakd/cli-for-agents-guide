@@ -27,7 +27,9 @@ A submission-only command can return zero for successful acceptance. Its result 
 
 ## Output scope
 
-Lists can return key fields and a bounded number of items first. Long logs can begin with relevant failures and a summary. Callers must be able to distinguish complete, partial, and summarized results.
+Identifiers and state may suffice when selecting an object from a list. Investigating that object can require detailed configuration or logs. Separating list and detail lookup avoids making callers read every object in full at the outset. Keep the information needed for selection in the list, with identifiers and a path to detail lookup.
+
+Long logs can likewise begin with relevant failures and a summary. In either case, callers must be able to distinguish complete, partial, and summarized results.
 
 ```text
 Returned: 20 of 143 deployments

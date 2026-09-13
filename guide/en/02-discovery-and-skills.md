@@ -46,7 +46,9 @@ tool deploy
 tool deploy inspect --help
 ```
 
-The caller finds a capability at the top level, a related command in the group, and the required arguments and output in the final call.
+For a tool with this many command levels, top-level help supplies enough information to choose what to read next. It shows capability names and applicability, leaving each command's arguments and examples to its detailed help. After selecting a command, the caller reads its detailed input and output contract and follows a related skill when a workflow is needed.
+
+More discovery steps are not inherently better. One help call may suffice for a small tool. As capabilities grow, keep relevant information reachable without requiring unrelated descriptions to be read first.
 
 Full lookup is useful for tool audits or generating integrations.
 

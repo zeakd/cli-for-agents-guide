@@ -2,7 +2,9 @@
 
 Using a CLI involves more than executing commands. An agent finds a capability, constructs input, interprets the result, and continues the task. When information is missing at one of these steps, it must search external documentation or make additional calls to discover it.
 
-The CLI can explain much of this directly. Help and schemas describe accepted input, usage skills explain workflows, and results carry facts observed during execution. Creating an object can return both its identifier and a command to inspect it.
+The information a CLI provides changes with the execution stage. Selecting a tool requires capabilities and applicability; constructing a call requires an input contract. After execution, the caller needs the actual result and next actions. Providing this information when needed, rather than requiring it all to be read first, lets callers work with context relevant to the current decision.
+
+Designing for attention concerns timing as well as volume. Tool descriptions enter a context that already contains the user's request and earlier work. Organize help and skills around the relevant task, and results around values that become known only after execution. Returning an inspection command with the actual identifier of a newly created object is one example.
 
 Providing this guidance does not require the CLI to infer the user's goal. The author defines capabilities and relationships; the CLI fills in values obtained during execution. The calling agent chooses actions according to the user's request.
 

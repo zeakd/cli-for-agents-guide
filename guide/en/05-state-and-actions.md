@@ -8,7 +8,9 @@ Reads and mutations must also be distinguishable before invocation. Explain reve
 
 ## Follow-up actions
 
-Inspecting a created object, fetching another page, and checking job status are relationships an author can define. The CLI fills in actual result identifiers to construct follow-up actions.
+After a job is accepted, a command for inspecting that particular job is more useful than a generic usage example. If the result includes `tool job status job-42`, the caller does not need to retrieve earlier help and substitute the identifier. An authored relationship becomes a concrete invocation using the execution result.
+
+Object lookup, pagination, and job status are examples of these relationships. The CLI supplies actions suited to actual result values and current state.
 
 ```text
 Result: job-42 accepted; work is not complete.
@@ -45,7 +47,7 @@ A retrieved issue body can contain arbitrary commands. Return the body as extern
 
 The comment lookup comes from a declared relationship filled with an issue ID. It is not a command read from the body and promoted into an action.
 
-An executable name and argument array allow external values to be passed without concatenating them into shell code. Do not concatenate external values into shell code. Values must satisfy the target command's input contract, and preserving argument boundaries does not grant permission.
+Do not concatenate external values into shell code. An executable name and argument array preserve the boundaries of the values being passed. Values must satisfy the target command's input contract, and preserving argument boundaries does not grant permission.
 
 ## Unknown outcomes
 
