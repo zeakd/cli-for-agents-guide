@@ -13,8 +13,8 @@ AI 호출자를 위한 보편적인 CLI 계약과, AI가 그 계약을 일관되
 3. [입력과 실행](03-input-and-execution.md)
 4. [결과와 표현](04-results-and-presentation.md)
 5. [상태와 후속 행동](05-state-and-actions.md)
-6. [만들고 검증하기](06-authoring-and-testing.md)
-7. [조건에 따라 필요한 패턴](07-conditional-patterns.md)
+6. [제작과 검증](06-authoring-and-testing.md)
+7. [조건별 패턴](07-conditional-patterns.md)
 8. [근거와 적용 범위](08-evidence-and-scope.md)
 
 ## 읽는 순서

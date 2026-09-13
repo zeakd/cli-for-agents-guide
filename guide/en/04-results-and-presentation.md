@@ -1,74 +1,55 @@
 # 4. Results and presentation
 
-## Choose useful defaults
+## Default output
 
-Ordinary execution commands return JSON by default. Do not switch between machine and human formats because stdout happens to be a terminal or a pipe. An agent may use a terminal, and a human may redirect output.
+Ordinary execution commands return JSON by default. Output format does not change based on TTY detection. Agents can run in terminals, and humans can send output to files or other programs.
 
-Use `--human` to request a readable presentation of the same result:
+Use `--human` to select human presentation.
 
 ```sh
 tool repo list
 tool repo list --human
 ```
 
-That presentation may be prose, a table, or a list. It must not change the operation or its success/failure meaning. A framework should provide a generic readable fallback for ordinary commands so that `--human` works without a custom renderer. Authors can supply better renderers for individual commands. Human mode does not enable prompts.
+Presentation can use tables, lists, or prose appropriate to the result, while preserving the operation and success meaning. Frameworks provide a default readable presentation so authors add custom renderers only when needed. `--human` does not enable interactive input.
 
-Help and skills are reading surfaces and can use text or Markdown. Commands whose output is itself an artifact may declare another format: source text, CSV, binary data, or a stream. Expose that format and any supported presentation options before invocation. Reject unsupported options rather than quietly ignoring them.
+Help and skills can use text or Markdown. Commands whose output is file content declare its format, such as CSV, source text, binary, or a stream. Supported formats and presentation options must be discoverable before invocation. Reject unsupported options instead of ignoring them.
 
-## Keep channels predictable
+## Channels and exit codes
 
-For the default JSON contract, both success and failure results go to stdout. This gives the caller one result stream to parse for either outcome. Progress and supplementary diagnostics go to stderr, where they cannot corrupt that structured result. Exit status also signals failure: successful execution uses zero; failure uses a nonzero status.
+Under the default JSON contract, success and failure results go to stdout. Callers read the result from the same stream in either case. Progress and supplementary diagnostics go to stderr.
 
-When stdout is an artifact or payload stream, report errors on stderr. Never insert an error envelope or progress message into a file's bytes. The output declaration determines which contract applies.
+Commands whose stdout is a payload send errors to stderr. Inserting an error envelope among file bytes or records can corrupt the data or make it hard for consumers to distinguish. Expected failures and unexpected exceptions must both remain recognizable as failures.
 
-These are semantic contracts, not a prescribed set of envelope field names. Expected failures and unexpected exceptions must both remain recognizable as failures. Internal exception or result-value conventions are discussed in [chapter 6](06-authoring-and-testing.md).
+Failures also use nonzero exit codes. Commands performing several units of work define whether to continue or stop after a failure and report successful, failed, and unprocessed scope. If an attempted unit fails, the default exit status is nonzero. A command promising completed work also must not exit successfully while required units are unprocessed or have unknown outcomes.
 
-## Say what succeeded
+A submission-only command can return zero for successful acceptance. Its result states that the work is not yet complete.
 
-Accepting a request and completing its work are different outcomes. A successful submission can exit zero while clearly reporting that work is still pending. It must not claim the requested background operation has finished.
+## Output scope
 
-Commands that perform several units of work, such as batch commands, may permit partial success. Their contract determines whether to continue or stop after a failure. Report the successful, failed, and unprocessed scope; do not label a partly failed execution as complete success. If any attempted unit of work fails, use a nonzero exit status by default. For a command contracted to complete the requested work, also use a nonzero status when required units remain unattempted or their outcomes are unknown. A command contracted only to submit work can report successful acceptance separately, as described above.
+Lists can return key fields and a bounded number of items first. Long logs can begin with relevant failures and a summary. Callers must be able to distinguish complete, partial, and summarized results.
 
-## Bound output without hiding facts
-
-Large output can bury important information and make reasoning harder. Return what is needed for the next decision, with an explicit route to more detail.
-
-| Result | Useful default | Expansion |
-| --- | --- | --- |
-| Many objects | A bounded list of key fields | Next page and object details |
-| Long execution log | Summary and relevant failures | Full log or a selected range |
-| Large document | Requested sections or an identified summary | Original content |
-
-Distinguish omitted items from abbreviated content. State when the response is partial or summarized. Supply the next page, detail lookup, or other expansion route, and disclose when fuller information is unavailable. Never present a truncated result as complete or hide a fact that changes its meaning.
-
-Limits, time ranges, field selection, and detail levels can be domain-specific. The common requirement is control over volume and an honest account of what was returned.
-
-## Output for composition
-
-An ordinary query result and a payload intended for another command can serve different purposes.
-
-```sh
-tool deploy get api
+```text
+Returned: 20 of 143 deployments
+Next page: tool deploy list --cursor page-2
 ```
 
-The query result may include state, explanations, and follow-up actions. A dedicated export command can instead write the deployment configuration itself:
+Let callers control volume through limits, field selection, or detail levels suitable for the domain. Mark omitted items differently from abbreviated content. Provide the next lookup when pages remain, or original content and detail lookup when summarizing. State when fuller information is unavailable. Reducing output must not hide facts that change its meaning.
 
-```sh
-tool deploy export api
-```
+## Pipes and streams
 
-This makes it easier to pass data in the receiving command's expected format. Extracting a field from an ordinary result is also possible, but identify which part satisfies the input contract.
+Query results can include state and follow-up actions. To pass only configuration to another command, provide a dedicated `export` path or allow fields to be extracted, identifying which part satisfies the receiving command's input contract.
 
-If a tool offers streams, describe their format and completion and failure signals.
+Stream producers describe the format and completion and failure signals. Once bytes are written they cannot be retracted; report partial output honestly when production fails. Large record sets can use a format such as JSONL, with one object per line.
 
 ```sh
 tool records export --format jsonl |
   tool records validate --input-format jsonl --input-file -
 ```
 
-Here each line is one record. Reaching the end of input does not establish that the producer successfully emitted the complete dataset: it may have failed midway.
+End of input does not guarantee producer success. A producer can emit some records and then fail; the consumer may still see only the end of input.
 
-A pipe alone does not guarantee success of the whole operation. Where complete input matters, verify the producer's exit status or use completion markers, expected counts, or another suitable check. A shell's pipeline failure status can reveal a failure after execution; it does not prevent the consumer from acting on earlier bytes. A consumer that changes state must define whether it validates all input and producer completion before acting, or processes items incrementally and reports partial results.
+Operations requiring complete input must establish completeness through producer exit status, a completion marker, expected counts, or another suitable check. Checking pipeline failure status does not undo changes already performed by the consumer. Mutating commands must define whether they validate all input and producer completion before acting, or process items incrementally and report partial results.
 
 ---
 

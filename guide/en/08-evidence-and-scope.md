@@ -1,29 +1,18 @@
 # 8. Evidence and scope
 
-## Distinguish requirements, methods, and cases
+Read the guide's requirements separately from its implementation methods.
 
-“Input documentation matches validation” is a caller-facing contract. “Generate both from one declaration” is an implementation method. “Use a temporary home” is a testing pattern for tools that own persistent state.
+Agreement between input descriptions and validation is a contract callers rely on. Generating both from shared declarations is a way to maintain it. A temporary home is a testing pattern for tools that own state. Treating these as equally mandatory features adds machinery where it is not needed. State when a recommendation applies and when another choice is appropriate.
 
-Treating all three as universal requirements burdens tools that do not need the machinery. Keep each recommendation's applicability visible, and explain the condition under which another choice is appropriate.
+Input validation, observable state, and testable dependencies were useful before AI. Their usefulness to agents does not establish historical novelty or performance improvements. Performance and correctness claims should include the conditions measured and the supporting evidence. A generated schema alone does not prove that every handler follows it.
 
-When adding a field, command, or rule, ask:
+This guide addresses design when choosing a CLI. The choice between CLI, MCP, and other interfaces depends on the environment; no particular harness, language, or package manager is assumed.
 
-- Does it help the caller interpret the result or choose and construct an action?
-- Does it make common correct use simpler?
-- Does it reduce omissions or contradictions during maintenance?
-- Is that benefit worth the output volume and implementation cost?
+## Examples and implementation coverage
 
-## State the assumptions honestly
+Commands, responses, and file layouts illustrate design choices. Exact command names, field names, and knowledge assembly APIs are not a universal specification.
 
-Design for a caller that may be unfamiliar with the tool or missing earlier context. This does not require claiming that every AI invocation is a blank slate or that humans have unlimited context.
-
-Input validation, observable state, and testable dependencies were useful before AI. Their usefulness to agents does not establish historical novelty. Claims about performance or correctness need evidence appropriate to the claim; a generated schema alone is not proof that every handler follows it.
-
-Choosing between CLI, MCP, or other interfaces depends on the environment. This guide describes the surface to provide when choosing a CLI. It does not prescribe an agent harness, compatibility policy, language, or package manager.
-
-## Reading the examples
-
-Command, response, and layout examples make design choices concrete. Their command names, field names, and assembly APIs are not a universal specification or a statement of current TypeScript package support. Shell examples illustrate composition; [chapter 4](04-results-and-presentation.md#output-for-composition) explains why a pipe alone does not guarantee complete input or successful execution.
+Compare reference TypeScript behavior against a specific revision. Distinguish features the guide recommends from features the package currently provides, and update coverage as code changes.
 
 ## Reference implementation coverage
 

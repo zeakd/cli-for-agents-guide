@@ -1,48 +1,44 @@
 # 2. Discovery and usage knowledge
 
-## Start with the name
+## Tool names and help
 
-The bare tool name and its help option provide the same help:
+Invoking the tool name alone provides the same help as `--help`.
 
 ```sh
 tool
 tool --help
 ```
 
-Apply the same rule to command groups:
+Command groups support the same discovery path.
 
 ```sh
-tool repo
-tool repo --help
+tool deploy
+tool deploy --help
 ```
 
-A group has no implicit action. Exploring it must not create an object or launch an application. An execution command is different: a command requiring no arguments may execute immediately; one missing required input reports an input error. Do not turn every argument-free execution command into help.
+`tool deploy` lists deployment commands. Groups have no implicit execution; exploring one does not start a deployment or create an object.
 
-Small tools can expose commands directly. Larger tools can introduce meaningful groups. Avoid unnecessary levels, and do not automatically change existing command paths when the number of features grows. The author chooses the structure explicitly.
+Execution commands are distinct from groups. A command such as `tool status`, whose required input is already determined, can run without additional arguments. An execution command missing required input returns an input error.
 
-## Help, skills, and schema
+Small tools can expose commands directly; larger tools can use meaningful groups. Authors choose the structure. Adding more features must not automatically change existing command paths.
 
-Help describes available commands and their invocation syntax. A schema exposes the declared contract as structured data. Skills teach the caller how to use the tool: when it is useful, how commands fit together, what results mean, and which mistakes to avoid.
+## Help, schemas, and skills
 
-Help must identify the entry point for reading that usage knowledge. The spelling of the skill command is a tool choice; its purpose and access path must be clear.
+The three surfaces provide different information.
 
-A small tool may have one skill. A larger tool should let callers list skills with their names and applicability, select one, and follow references for more detail.
+| Surface | Main contents |
+| --- | --- |
+| Help | Command descriptions, invocation syntax, options, short examples |
+| Schema | Structured representation of declared contracts, including input and output |
+| Usage skill | Applicability, workflow, result interpretation, command relationships |
 
-```text
-help -> skill names and when to read them -> selected skill -> references
-```
+A deployment tool's help describes inputs to `list`, `inspect`, and `logs`. Its diagnosis skill explains how to find a deployment, identify the failed step, and read the relevant logs.
 
-An operation reference generated from declarations is useful, but does not replace authored workflows and guidance. Conversely, a skill should not duplicate every mechanical detail when it can point to current help or a schema.
+Help must expose a route to reading skills. The tool chooses the exact command name. A small tool can provide one skill; a larger tool should list names and applicability, then let the caller select a skill and follow references for details.
 
-## Describe the installed behavior
+## Selective discovery and full lookup
 
-Help, skills, and schema must describe the running version. Shipping usage knowledge with the CLI helps keep them aligned. The tool should also expose its version so callers can identify what they are using.
-
-Version alignment does not prove that authored instructions are accurate. Verify their examples and behavioral claims. Nor does rediscovery remove the need for compatibility: the tool's author chooses that policy according to its callers and distribution model.
-
-## Discover only what is needed
-
-Make the whole tool inspectable without requiring callers to read everything before using one part. For a large command set, show capabilities and their applicability first, then let callers narrow down to a command's contract.
+Inspecting one deployment does not require the entire command tree.
 
 ```sh
 tool
@@ -50,17 +46,17 @@ tool deploy
 tool deploy inspect --help
 ```
 
-The first call lists capabilities with short descriptions. The second lists deployment commands. The third explains one command's inputs, outputs, and examples.
+The caller finds a capability at the top level, a related command in the group, and the required arguments and output in the final call.
 
-A tool can also offer an explicit full lookup:
+Full lookup is useful for tool audits or generating integrations.
 
 ```sh
 tool schema --full
 ```
 
-A complete schema is useful for tool audits or generating integrations. It can be saved to a file or filtered programmatically rather than loaded into the agent's context in full. Its availability does not make it a prerequisite for every task.
+The full schema can be saved to a file and filtered programmatically. A tool can provide selective discovery as the normal path while supporting full lookup separately.
 
-Apply the same approach to skills: names and applicability first, then a selected skill and its references.
+Help, schemas, and skills must describe the running version, which must also be queryable. Shipping them together helps maintain alignment but does not establish the accuracy of authored examples. Rediscovery does not remove compatibility needs; the tool's callers and distribution model inform that policy.
 
 ---
 

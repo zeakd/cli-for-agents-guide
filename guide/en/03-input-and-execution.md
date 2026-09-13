@@ -1,52 +1,35 @@
 # 3. Input and execution
 
-## Make input discoverable
+## Input validation
 
-Describe positionals, options, accepted values, defaults, and required input before execution. Include stdin when a command reads piped content. Callers need to know its expected format and whether it is required.
-
-Consider an illustrative command:
+Before invocation, callers must be able to discover positionals, options, accepted values, defaults, and required input.
 
 ```sh
 tool report export sales --format csv
 ```
 
-Its contract might require a report name and accept only `json` or `csv` for `--format`. Help, schema, and execution must agree on those rules.
+If this command requires a report name and supports only `json` and `csv`, help, schema, and execution must follow the same rules.
 
-## Reject invalid input
-
-Do not silently ignore unknown commands or options, missing required values, invalid types or allowed values, or positionals beyond the declared arity. Accepting only part of a request and reporting success misrepresents what happened.
-
-An input error should identify the offending input and supply the evidence needed to correct it:
+Unknown commands or options, missing values, invalid types, and extra positionals are errors. Accepting only part of a request and returning success can mislead callers into believing the intended work was performed.
 
 ```text
 Invalid value: --format yaml
 Allowed values: json, csv
 ```
 
-A close match can be suggested, but must not be substituted and executed automatically. Include relevant usage rather than dumping the entire help whenever a local explanation is sufficient. Structured error details let a caller use the allowed values without extracting them from prose.
+Errors identify the offending input and provide the information needed to correct it. Close matches can be suggested but must not be substituted and executed automatically. A local explanation need not include the entire help. Structured details such as allowed values save callers from extracting them from prose.
 
-## Default to non-interactive execution
+Shared declarations are useful for generating parsing, validation, and descriptions of ordinary arguments. A custom parser for a specialized expression language must describe its grammar and enforce the same input and error contracts.
 
-An ordinary invocation must not stop at an unexpected question or menu. If required input is absent, explain what is needed and fail. A tool may offer interactive operation as an explicit choice.
+## Files and stdin
 
-`--human` changes presentation, not interactivity. Declared stdin and an explicitly requested wait are also different from an unexpected prompt. Their behavior must be discoverable before the caller selects them.
-
-## Share the definition
-
-For ordinary arguments, a framework should generate parsing, validation, help, and schema from one input declaration. This makes a new option one change instead of several coordinated edits.
-
-A specialized expression language may need a custom parser. That escape hatch must still describe its grammar and enforce the same input and error contracts. Parser implementation is a choice; agreement between explanation and behavior is the requirement.
-
-## Accept complex input
-
-Keep common input short with arguments and options. Files or an explicitly selected stdin path may be more suitable for nested configuration or collections of items.
+Nested configuration is often easier to handle as a file than as many options.
 
 ```sh
-tool deploy create --name api --region seoul
 tool deploy create --input-file deployment.json
 ```
 
-Describe the input format and provide examples. If files and options can be combined, define their precedence or reject conflicts. Identify invalid values by their location within the input:
+Provide supported formats and examples. If files and options can be combined, define precedence or reject conflicts.
 
 ```text
 Invalid value at containers[0].healthcheck.intervalSeconds
@@ -54,25 +37,24 @@ Expected: a positive integer
 Received: -1
 ```
 
-## Compose steps that need no new decision
-
-Do not require the agent to intervene between steps that need no new decision. Provide compatible input and output contracts, and include common combinations in usage knowledge.
+Commands supporting stdin describe its format, whether it is required, and when it is read. In this example, `--input-file -` selects stdin.
 
 ```sh
 tool deploy export api |
   tool deploy validate --input-file -
 ```
 
-In this example, `export` writes the deployment configuration itself and `validate` accepts that format. The `-` value explicitly selects stdin. The agent does not need to read and copy the intermediate JSON into another call.
+Ordinary invocations do not open unexpected questions or menus, including confirmation prompts. Missing required input is explained and causes failure. Interactive operation can be offered as a separate, explicit choice. Declared stdin and explicitly requested waiting are distinct from such prompts. Their behavior must be discoverable before selection.
 
-| Relationship between steps | Composition |
-| --- | --- |
-| The next step accepts the output format and its completeness guarantees | A pipe with the required completeness checks |
-| The next step depends only on the success guaranteed by the previous command | Run it after that success; wait or query status if acceptance alone is insufficient |
-| Operations are independent | Parallel execution |
-| The result determines the target or method | Inspect the result before choosing the next call |
+## Command composition
 
-Do not skip necessary decisions just to reduce calls. Reduce the cost of making the agent reconsider an already determined procedure. [Chapter 4](04-results-and-presentation.md#output-for-composition) covers compatible payloads and failure handling.
+When an agent invokes commands separately, it reads each result and constructs the next request between calls. This is necessary when output requires a new decision. For a fixed sequence that only passes data between steps, it adds unnecessary round trips.
+
+In the export and validation example, the agent checks the final validation result without copying intermediate JSON. Include common combinations in task skills alongside individual command help.
+
+A step that depends only on success can run after that success. Independent queries can run in parallel. Successful asynchronous submission, however, does not mean the work is complete. If the next step needs completed results, query status or wait first.
+
+Pipelines also require compatible formats and failure handling. The [next chapter](04-results-and-presentation.md#pipes-and-streams) covers those conditions.
 
 ---
 

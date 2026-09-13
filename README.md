@@ -2,39 +2,37 @@
 
 **What should a CLI designed for AI agents look like?**
 
-A CLI gives an agent a way to run a tool. But being able to invoke it does not mean the agent has the information needed to use it well.
+A CLI is a familiar way for agents to run tools. They can explore commands, supply input, and connect output to other programs.
 
-Command syntax may be available while guidance on when to use it lives elsewhere, and invalid options may be ignored. A result may leave it unclear whether work is complete, how much was processed, or what can follow. The caller fills those gaps through exploration and inference.
+Being able to run a command, however, does not mean all the information needed to use it is available. Help may describe syntax without explaining a workflow, and a result may leave completion unclear. An agent may also invoke commands separately when the work could be handled by connecting them.
 
-This guide treats **discovery, invocation, result interpretation, and choosing the next action** as part of CLI design. It also explains structures for building and maintaining that surface consistently.
+This guide covers **CLI design from discovery and execution to result interpretation and follow-up actions**. It explains how a CLI can provide information that agents otherwise have to search for or infer.
 
 **[Read the guide →](guide/en/index.md)** · [Korean](README.ko.md)
 
-### Discover usage knowledge
+### Discovery and usage knowledge
 
-Start with the tool name and follow help to usage skills. Learn when commands are useful, how to combine them, and what to watch out for alongside their syntax. Discover what is relevant first, then choose the details to read.
+Start with the tool name and find the commands and guidance needed for the task. Help explains syntax; skills explain workflows. Organize growing command sets so callers can read the relevant parts first.
 
-### Invoke commands correctly
+### Input and execution
 
-Design defaults so that ordinary use does not require repeated instructions or extra options. Expose input contracts and give callers evidence to correct invalid requests. The guide covers JSON defaults for ordinary results, explicit human presentation, and execution that does not stop at unexpected prompts.
+Explore defaults that simplify common work, input errors that provide evidence for correction, and complex input through files or stdin. Steps requiring no new decision can run together through pipes or command composition.
 
-### Use results to inform the next decision
+### Results and next actions
 
-Distinguish acceptance from completion and partial results from complete ones. Report the state and scope needed to interpret a result. Offer relevant follow-up commands and hints while leaving the choice of action to the caller. When information is large, provide a useful amount and a route to more.
+Cover JSON and human presentation, output volume and pagination, partial failure, and asynchronous state. Provide relevant follow-up commands while keeping retrieved external content separate from guidance authored by the tool.
 
-### Keep descriptions and behavior aligned
+### Authoring and testing
 
-Generate help and validation from shared declarations, separate decisions from side effects, and test both functions and actual CLI invocations. These structures help agents building and maintaining the code reduce omissions and inconsistencies, while keeping the surface reliable for callers.
+Generate help and validation from command declarations, and assemble knowledge kept close to features into task guides. Separate decisions from side effects and verify behavior from functions through actual CLI invocations.
 
 ## Scope
 
-This is a language- and framework-independent design guide. No package is required to apply its principles.
+The guide is independent of language and framework. No package is required to apply its principles.
 
-Common contracts are distinct from conditional patterns. Home directories, networking, authentication, and long-running work are covered for tools that need those facilities. Not every CLI needs the same internal structure.
+Home directories, networking, authentication, and long-running work are patterns for tools that need them. Commands and responses illustrate designs; exact command names and field names are not a universal specification.
 
-The guide has eight chapters. English is canonical; the Korean edition covers the same material. Commands written as `tool ...` illustrate designs, not runnable examples of a particular package.
-
-[Browse all chapters →](guide/en/index.md)
+English is canonical; the Korean edition covers the same material.
 
 ## Reference implementations
 
@@ -43,6 +41,6 @@ The guide has eight chapters. English is canonical; the Korean edition covers th
 | [cli-for-agents-ts](https://github.com/zeakd/cli-for-agents-ts) | TypeScript package `cli-for-agents`, with runnable examples |
 | `cli-for-agents-go` — planned | Go implementation |
 
-The TypeScript implementation offers concrete code through which to examine the guide's principles. Its current behavior also differs from the recommendations, including JSON defaults and error channels, and some contracts remain unimplemented. See [versioned implementation coverage](guide/en/08-evidence-and-scope.md#reference-implementation-coverage) for the differences.
+The TypeScript implementation illustrates some principles in code. Its current behavior differs from the guide's recommendations in areas such as JSON defaults and error channels, and some contracts remain unimplemented. See [versioned coverage](guide/en/08-evidence-and-scope.md#reference-implementation-coverage) for the differences.
 
 License: [MIT](LICENSE)

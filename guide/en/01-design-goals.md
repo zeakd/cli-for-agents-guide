@@ -1,32 +1,24 @@
 # 1. Design goals
 
-A CLI has two kinds of AI users: the agent calling its commands and the agent maintaining its code. The caller needs to discover capabilities, construct valid input, interpret results, and choose its next action. The maintainer needs to change behavior without leaving its description, validation, or tests behind.
+Using a CLI involves more than executing commands. An agent finds a capability, constructs input, interprets the result, and continues the task. When information is missing at one of these steps, it must search external documentation or make additional calls to discover it.
 
-Both benefit when a task requires less unrelated context. A caller should not have to read every command to use one feature. A maintainer should not have to update the same fact in several files. Neither should have to infer facts the tool can report directly.
+The CLI can explain much of this directly. Help and schemas describe accepted input, usage skills explain workflows, and results carry facts observed during execution. Creating an object can return both its identifier and a command to inspect it.
 
-## Make ordinary use easy
+Providing this guidance does not require the CLI to infer the user's goal. The author defines capabilities and relationships; the CLI fills in values obtained during execution. The calling agent chooses actions according to the user's request.
 
-The most common correct use should be a short, natural invocation. A tool name opens discovery. Ordinary results are structured by default. Invalid input fails clearly. Reading output for a human is an explicit choice.
+## Defaults and the cost of calling
 
-When usage instructions repeatedly say “always add this flag” or “remember to check this,” ask whether a default or a validation rule can carry that responsibility. Keep instructions for judgments the tool cannot make mechanically.
+Defaults have the greatest effect on frequently used paths. If reading ordinary results structurally requires an extra flag, or useful values must be extracted from unnecessarily large output, every invocation adds work.
 
-The aim is not to print everything the tool knows. Give callers enough information for the next decision, with a way to discover and request more. Excess output can obscure the facts that matter.
+This guide recommends JSON as the default format for ordinary execution results. Human presentation is an explicit choice, and large results expose a useful scope first. Invalid input returns an error with evidence for correction instead of silently accepting part of the request.
 
-## Give the caller evidence
+Design also affects call count. Executing a known procedure one step at a time makes the agent read each intermediate result and construct the next command. Compatible inputs and outputs, together with documented combinations, can reduce round trips that require no new decision.
 
-The CLI exposes declared capabilities, authored usage knowledge, and observed execution facts. The agent chooses actions using that information and the user's request. The CLI need not infer intent or manage an arbitrary plan.
+## Authoring and maintenance
 
-For example, a tool can return a created object's identifier and the command to inspect it. It can do so because the author defined that relationship, without reasoning about the user's wider goal.
+Adding an option changes parsing, validation, help, and schema together. Maintaining these separately makes partial updates easy. Generating them from shared declarations and keeping related usage knowledge close to the command makes the information needed for a change easier to find.
 
-## Separate the contract from its implementation
-
-This guide distinguishes:
-
-- **Common contracts:** behavior callers can rely on, such as explicit input errors and discoverable output formats.
-- **Authoring structure:** ways to keep those contracts consistent, such as generating help and validation from one declaration.
-- **Conditional patterns:** facilities needed only by some tools, such as a replaceable home for persistent state or cancellation for a long-running job.
-
-A stateless filter should not need a home directory or a job database. A tool with those needs should be able to add them without losing the common contracts. The principles are independent of language and framework.
+Caller behavior and the structure that maintains it are connected. Accurate help requires description and implementation to change together; reliable error contracts require checking actual output and exit codes. The following chapters address both aspects.
 
 ---
 

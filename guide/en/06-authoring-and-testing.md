@@ -1,82 +1,55 @@
 # 6. Authoring and testing
 
-## Keep a feature's definition together
+## Command declarations
 
-Adding a command should not require independently editing parsing, routing, help, schema, and error text for the same fact. Collect its description, inputs, execution, and output declaration, and generate mechanical surfaces from those definitions.
+Inputs, descriptions, execution, and output formats form a command's definition. Generating parsing, validation, help, and schema from that definition avoids writing the same facts in several places. Require command descriptions and input contracts; provide a default output contract and require declarations for alternative formats.
 
-A registry is one useful way to connect these declarations. A feature folder is one useful way to keep related code nearby. Neither requires every feature to fit one file or every implementation to share a directory layout. The goal is to understand and change a feature without reading unrelated code or maintaining duplicate facts.
+Registries and feature folders are ways to implement this. A command need not fit one file. Organize definitions and usage knowledge so they can be found together when making a change.
 
-## Separate decisions from effects
+## Assembling usage knowledge
 
-Distinguish logic that computes a decision from code that reads files, accesses a network, obtains time, or writes output. Supply external dependencies through explicit boundaries such as a context object or function arguments.
-
-A pure function can be checked using only its inputs and return value. Do not pass a context into code that needs no environment. Effectful handlers can receive a narrow context with the capabilities they need; frameworks should make those dependencies replaceable without global patching.
-
-Expected failures should be easy to enumerate and handle. Result values, discriminated unions, and typed exceptions are possible approaches. The requirement is complete, recognizable failure handling; a TypeScript convention is not a rule for every language.
-
-## Test at the right boundary
-
-```text
-Pure function       -> inputs and return values
-Command or service  -> injected fake dependencies
-Actual CLI          -> isolated environment, real invocation and output
-```
-
-Function tests can use an in-memory store, a fake HTTP response, or a fixed clock. They can exercise precise conditions without setting up the real world.
-
-CLI tests cover boundaries those tests cannot establish: argument forwarding, configuration loading, stdout and stderr, exit codes, and actual persistence. A stateful tool can use a temporary home. Other tools can use temporary inputs or a test endpoint. [Chapter 7](07-conditional-patterns.md) explains these choices.
-
-Use verification appropriate to the change. Do not require all tests to run in one process or duplicate every case at every level. The maintaining agent should have a documented, repeatable way to run the relevant checks without relying on undocumented manual preparation.
-
-## Generate facts; verify authored knowledge
-
-Require command descriptions and input contracts. Provide a default output contract and require declarations for alternatives. Provide tool-level usage knowledge without requiring a separate skill for every command.
-
-A framework can detect missing declarations and compare generated surfaces. It cannot establish that prose is useful merely because a skill file exists or contains a command name. Review authored guidance and verify its behavioral examples. Executable documentation examples and output fixtures can help keep promises aligned with behavior.
-
-## Assemble usage knowledge
-
-Usage knowledge need not live in one separately maintained document. Keep declarations and related knowledge close to each command, then assemble them around the caller's task.
+Knowledge can live close to a feature and be assembled by task.
 
 ```text
 deploy/
-├── Shared usage knowledge
+├── Shared guidance
 │   └── Workflow for investigating a failed deployment
 ├── list
 │   ├── Input and output declarations
 │   └── Finding the deployment to investigate
 ├── inspect
 │   ├── Input and output declarations
-│   └── Interpreting its state
+│   └── Interpreting state
 └── logs
     ├── Input and output declarations
-    └── Narrowing down failure logs
+    └── Reading failure logs
 ```
 
-| Content | Examples | Maintenance |
-| --- | --- | --- |
-| Declared facts | Command names, arguments, defaults, output formats | Generate from declarations |
-| Authored knowledge | Applicability, interpretation, cautions, command relationships | Write and review |
+Command names, arguments, and defaults come from declarations. Authors write applicability, cautions, and result interpretation. Skills that include the same command can reference the same knowledge fragment.
 
-A task guide can reference the declarations and knowledge fragments it needs. If one command appears in several skills, avoid separately maintaining copies of the same description.
+Concatenating command descriptions does not produce a workflow. Order, branches, and composition need their own explanation. A framework can expand relevant declarations and command knowledge within that explanation. File layout and assembly APIs belong to the implementation. Provide tool-level usage knowledge without requiring a separate skill for every command.
 
-Concatenating command descriptions does not by itself explain a workflow. Authors still supply connections: which commands to combine, in what order, and where a result requires a new decision. Keep knowledge close to the feature when authoring and organize it around the task when reading. File layout and assembly APIs are implementation choices.
+## Separating dependencies
 
-## Evaluate usage knowledge
+Separate logic that computes decisions from code accessing files, networks, clocks, and output. Passing environmental dependencies through a context or function arguments makes them replaceable in tests without global patching.
 
-Check usage knowledge for discovery, use, and accuracy, not only presence.
+Pure functions are checked through inputs and return values. Handlers receive the dependencies needed to reproduce particular errors or responses. Code that needs no environment does not need a context merely for uniformity.
 
-| Level | Question |
+Represent expected failures in a form that makes complete handling straightforward. Result values, discriminated unions, and typed exceptions are internal choices that depend on the language and implementation.
+
+## Verification boundaries
+
+| Target | Main checks |
 | --- | --- |
-| Discovery | Can names and descriptions lead the caller to the relevant skill? |
-| Use | Can the caller construct correct invocations and combinations from the guidance? |
-| Accuracy | Do the instructions and examples match actual behavior? |
+| Pure function | Computation and return values for given input |
+| Handler or service | Interactions with injected dependencies |
+| Actual CLI | Argument forwarding, configuration loading, output channels, exit codes, persistence |
 
-Mechanical checks can find missing references, nonexistent commands, and incorrect example results. They cannot establish that the explanation is useful.
+Actual CLI tests cover connections that function tests cannot establish alone. Stateful tools can use temporary homes; others can use temporary input or test endpoints.
 
-Tools intended for agent use can also evaluate representative tasks, such as finding logs for a failed deployment. Observe whether the agent finds the relevant skill, avoids unrelated skills, and uses known combinations without unnecessarily splitting them into separate calls.
+Review authored usage knowledge and verify its behavioral examples. A skill file's existence or inclusion of a command name does not establish usefulness; mechanical checks alone cannot do that. Mechanical checks can find missing references and incorrect example results. Representative agent tasks reveal whether callers find the needed skill, avoid unrelated skills, construct valid calls, and use known combinations.
 
-Assess call count and elapsed time alongside correctness. Finishing quickly is not a good result if the agent skips a necessary check or changes the wrong target. Not every CLI needs the same evaluation infrastructure.
+Assess call count and time alongside correctness. Distinguish skipping necessary checks from eliminating unnecessary round trips. Document repeatable verification, without requiring the same evaluation infrastructure for every tool or duplicating every case at every level.
 
 ---
 
