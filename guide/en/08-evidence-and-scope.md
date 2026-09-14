@@ -16,7 +16,7 @@ Compare reference TypeScript behavior against a specific revision. Distinguish f
 
 ## Reference implementation coverage
 
-The [TypeScript implementation](https://github.com/zeakd/cli-for-agents-ts) is a concrete example, not a claim that all recommendations here are already implemented. The following snapshot is pinned to [revision 701eb6450a181640e63a47a281a4752cb6644e0c](https://github.com/zeakd/cli-for-agents-ts/tree/701eb6450a181640e63a47a281a4752cb6644e0c). Later revisions may differ.
+The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is a concrete example, not a claim that all recommendations here are already implemented. The following snapshot is pinned to [revision 701eb6450a181640e63a47a281a4752cb6644e0c](https://github.com/zeakd/cli-for-ai-ts/tree/701eb6450a181640e63a47a281a4752cb6644e0c). Later revisions may differ.
 
 | Area | Behavior in that revision | Contract described in this guide |
 | --- | --- | --- |
@@ -32,7 +32,7 @@ The [TypeScript implementation](https://github.com/zeakd/cli-for-agents-ts) is a
 
 The package's `--human` mode and broader action, partial-result, and skill contracts must not be assumed from these chapters. The `tool` commands in this guide are illustrative designs, not executable examples of that package. Field names and exact skill command spelling are left to the implementation; the behavioral distinctions are the guide's recommendations.
 
-Use [the pinned sources](https://github.com/zeakd/cli-for-agents-ts/tree/701eb6450a181640e63a47a281a4752cb6644e0c/src) to assess that implementation. Keep coverage claims versioned as code changes. Verify both generated facts and authored examples before describing a behavior as supported.
+Use [the pinned sources](https://github.com/zeakd/cli-for-ai-ts/tree/701eb6450a181640e63a47a281a4752cb6644e0c/src) to assess that implementation. Keep coverage claims versioned as code changes. Verify both generated facts and authored examples before describing a behavior as supported.
 
 ---
 

@@ -40,8 +40,8 @@ English is canonical; the Korean edition covers the same material.
 
 | Repository | Role |
 | --- | --- |
-| [cli-for-agents-ts](https://github.com/zeakd/cli-for-agents-ts) | TypeScript package `cli-for-agents`, with runnable examples |
-| `cli-for-agents-go` — planned | Go implementation |
+| [cli-for-ai-ts](https://github.com/zeakd/cli-for-ai-ts) | TypeScript package `cli-for-ai`, with runnable examples |
+| `cli-for-ai-go` — planned | Go implementation |
 
 The TypeScript implementation illustrates some principles in code. Its current behavior differs from the guide's recommendations in areas such as JSON defaults and error channels, and some contracts remain unimplemented. See [versioned coverage](guide/en/08-evidence-and-scope.md#reference-implementation-coverage) for the differences.
 

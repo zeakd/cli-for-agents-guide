@@ -40,8 +40,8 @@ JSON과 사람용 표현, 출력량과 페이지 조회, 부분 실패와 비동
 
 | 저장소 | 역할 |
 | --- | --- |
-| [cli-for-agents-ts](https://github.com/zeakd/cli-for-agents-ts) | TypeScript 패키지 `cli-for-agents`와 실행 가능한 예제 |
-| `cli-for-agents-go` — 예정 | Go 구현 |
+| [cli-for-ai-ts](https://github.com/zeakd/cli-for-ai-ts) | TypeScript 패키지 `cli-for-ai`와 실행 가능한 예제 |
+| `cli-for-ai-go` — 예정 | Go 구현 |
 
 TypeScript 구현에서 일부 원칙을 코드로 살펴볼 수 있다. 현재 동작은 JSON 기본값과 오류 채널 등에서 가이드의 권고와 다르며, 아직 구현하지 않은 계약도 있다. [버전별 지원 범위](guide/ko/08-evidence-and-scope.md#참조-구현의-지원-범위)에 차이를 정리했다.
 
