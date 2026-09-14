@@ -16,23 +16,24 @@ Compare reference TypeScript behavior against a specific revision. Distinguish f
 
 ## Reference implementation coverage
 
-The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is a concrete example, not a claim that all recommendations here are already implemented. The following snapshot is pinned to [revision 701eb6450a181640e63a47a281a4752cb6644e0c](https://github.com/zeakd/cli-for-ai-ts/tree/701eb6450a181640e63a47a281a4752cb6644e0c). Later revisions may differ.
+The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is a concrete example, not a claim that all recommendations here are already implemented. The following snapshot is pinned to [revision 7600bc09c62fed10942bb5f81de69536ef90c145](https://github.com/zeakd/cli-for-ai-ts/tree/7600bc09c62fed10942bb5f81de69536ef90c145). Later revisions may differ.
 
 | Area | Behavior in that revision | Contract described in this guide |
 | --- | --- | --- |
-| Discovery | Top-level and domain help, generated guide, schema | Also supports selective discovery of multiple authored skills when needed |
-| Output | Renderers run without `--json`; error presentation can depend on TTY | Ordinary JSON by default; explicit `--human` |
-| Error channel | JSON errors go to stderr | Default JSON success and failure go to stdout; payload errors stay on stderr |
-| Output declaration | Raw and stream modes exist; schema describes inputs | Alternative output formats are discoverable before invocation |
-| Input | Declared handler inputs receive required-input and unknown-option checks; built-in system/help paths can ignore undeclared input, and maximum positional arity is not enforced | Reject input outside the declared contract, including extra positionals |
-| Group routing | An optional fallback can execute on an unrecognized verb | Groups have no implicit execution; invalid commands fail |
-| Follow-up actions | Error recovery fields exist | Relevant actions and hints can accompany success or failure |
-| Usage guidance | Generated guide recommends doctor first and direct execution of recovery commands | Doctor is optional; a suggestion does not grant permission |
-| Authoring and testing | Shared declarations and injected contexts | Useful implementation methods, with CLI-boundary tests as well |
+| Discovery | Root and group bare calls match help; no built-in global schema command; a programmatic schema API remains | Help provides essential invocation and result information; structured export is optional |
+| Output | Ordinary JSON by default; explicit `--human`, with readable JSON fallback | Same execution regardless of presentation |
+| Error channel | Ordinary success and failure go to stdout; diagnostics go to stderr | Payload output needs a separate failure-channel contract when supported |
+| Output declaration | Optional parser validates successful data; separately supplied output schema is descriptive; help has output summaries | Provide the result structure needed for interpretation and composition; full output structure is not generated from parsers here |
+| Input | Unknown, missing and excess inputs fail; declared value and cross-input constraints apply; stdin shape checks precede context creation | Reject input outside the declared contract; help validates supplied inputs without requiring omitted execution inputs |
+| Group routing | Groups show help; unknown commands fail | Groups have no implicit execution |
+| Follow-up actions | Structured result actions and hints are not implemented | Relevant actions and hints can accompany success or failure |
+| Usage guidance | Command help and validated examples; no authored skill surface | Related workflows are reachable from help when needed |
+| Execution state | Completed, accepted and failed results; reporting failures preserve known returned state; cancellation does not promise rollback | Also distinguish partial and unknown outcomes where operations require them |
+| Authoring and testing | Shared declarations, injected contexts, context disposal and real-process tests | Useful implementation methods, including checks at the CLI boundary |
 
-The package's `--human` mode and broader action, partial-result, and skill contracts must not be assumed from these chapters. The `tool` commands in this guide are illustrative designs, not executable examples of that package. Field names and exact skill command spelling are left to the implementation; the behavioral distinctions are the guide's recommendations.
+The broader action, partial-result, and skill contracts are not implemented in this revision and must not be assumed from these chapters. The `tool` commands in this guide are illustrative designs, not executable examples of that package. Field names and exact skill command spelling are left to the implementation; the behavioral distinctions are the guide's recommendations.
 
-Use [the pinned sources](https://github.com/zeakd/cli-for-ai-ts/tree/701eb6450a181640e63a47a281a4752cb6644e0c/src) to assess that implementation. Keep coverage claims versioned as code changes. Verify both generated facts and authored examples before describing a behavior as supported.
+Use [the pinned sources](https://github.com/zeakd/cli-for-ai-ts/tree/7600bc09c62fed10942bb5f81de69536ef90c145/src) to assess that implementation. Keep coverage claims versioned as code changes. Verify both generated facts and authored examples before describing a behavior as supported.
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## Command declarations
 
-Inputs, descriptions, execution, and output formats form a command's definition. Generating parsing, validation, help, and schema from that definition avoids writing the same facts in several places. Require command descriptions and input contracts; provide a default output contract and require declarations for alternative formats.
+Inputs, descriptions, execution, and output formats form a command's definition. Generating parsing, validation, and help from that definition avoids writing the same facts in several places. Optional structured exports should derive from the same definition; shared declarations do not require a separate schema command. Require command descriptions and input contracts; provide a default output contract and require declarations for alternative formats.
 
 Registries and feature folders are ways to implement this. A command need not fit one file. Organize definitions and usage knowledge so they can be found together when making a change.
 

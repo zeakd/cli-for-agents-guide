@@ -8,7 +8,7 @@ Before invocation, callers must be able to discover positionals, options, accept
 tool report export sales --format csv
 ```
 
-If this command requires a report name and supports only `json` and `csv`, help, schema, and execution must follow the same rules.
+If this command requires a report name and supports only `json` and `csv`, help and execution must follow the same rules. A structured contract, if provided, must describe those rules too.
 
 Unknown commands or options, missing values, invalid types, and extra positionals are errors. Accepting only part of a request and returning success can mislead callers into believing the intended work was performed.
 

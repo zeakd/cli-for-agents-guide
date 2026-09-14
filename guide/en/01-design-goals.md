@@ -18,7 +18,7 @@ Design also affects call count. Executing a known procedure one step at a time m
 
 ## Authoring and maintenance
 
-Adding an option changes parsing, validation, help, and schema together. Maintaining these separately makes partial updates easy. Generating them from shared declarations and keeping related usage knowledge close to the command makes the information needed for a change easier to find.
+Adding an option changes parsing, validation, and help together. If the tool also exposes a structured contract, that representation must stay aligned. Maintaining these separately makes partial updates easy. Generating them from shared declarations and keeping related usage knowledge close to the command makes the information needed for a change easier to find.
 
 Caller behavior and the structure that maintains it are connected. Accurate help requires description and implementation to change together; reliable error contracts require checking actual output and exit codes. The following chapters address both aspects.
 

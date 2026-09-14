@@ -22,21 +22,20 @@ Execution commands are distinct from groups. A command such as `tool status`, wh
 
 Small tools can expose commands directly; larger tools can use meaningful groups. Authors choose the structure. Adding more features must not automatically change existing command paths.
 
-## Help, schemas, and skills
+## Help and usage skills
 
-The three surfaces provide different information.
+Help is the default place to discover a command's contract. It describes how to invoke the command and the input and result information needed to use it. A caller should not need a separate schema lookup to learn essential invocation details.
 
 | Surface | Main contents |
 | --- | --- |
-| Help | Command descriptions, invocation syntax, options, short examples |
-| Schema | Structured representation of declared contracts, including input and output |
+| Help | Command descriptions, invocation syntax, inputs, relevant result structure, short examples |
 | Usage skill | Applicability, workflow, result interpretation, command relationships |
 
 A deployment tool's help describes inputs to `list`, `inspect`, and `logs`. Its diagnosis skill explains how to find a deployment, identify the failed step, and read the relevant logs.
 
 Help must expose a route to reading skills. The tool chooses the exact command name. A small tool can provide one skill; a larger tool should list names and applicability, then let the caller select a skill and follow references for details.
 
-## Selective discovery and full lookup
+## Read the information needed for the task
 
 Inspecting one deployment does not require the entire command tree.
 
@@ -50,15 +49,11 @@ For a tool with this many command levels, top-level help supplies enough informa
 
 More discovery steps are not inherently better. One help call may suffice for a small tool. As capabilities grow, keep relevant information reachable without requiring unrelated descriptions to be read first.
 
-Full lookup is useful for tool audits or generating integrations.
+Usage guidance can include the contract details needed at each step. A workflow that extracts deployment IDs can show the relevant list field beside the list command, then reference the inspection command that accepts an ID. Include the fields needed for that workflow rather than attaching the entire tool specification. Generate command syntax and field descriptions from shared declarations where possible, so the guidance does not become a separately maintained copy.
 
-```sh
-tool schema --full
-```
+A separate global schema command is not required. Tools with integrations that consume structured contracts may provide a programmatic API or an export for that purpose. Choose the scope and format for the consumer; ordinary command use should remain understandable through help. This guide does not establish that adding a schema lookup improves agent performance over sufficient help and usage guidance.
 
-The full schema can be saved to a file and filtered programmatically. A tool can provide selective discovery as the normal path while supporting full lookup separately.
-
-Help, schemas, and skills must describe the running version, which must also be queryable. Shipping them together helps maintain alignment but does not establish the accuracy of authored examples. Rediscovery does not remove compatibility needs; the tool's callers and distribution model inform that policy.
+Help and usage skills must describe the running version, which must also be queryable. Any structured contract offered must agree with it too. Shipping them together helps maintain alignment but does not establish the accuracy of authored examples. Rediscovery does not remove compatibility needs; the tool's callers and distribution model inform that policy.
 
 ---
 
