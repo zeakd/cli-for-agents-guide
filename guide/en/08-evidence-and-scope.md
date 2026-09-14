@@ -20,7 +20,7 @@ The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is a con
 
 | Area | Behavior in that revision | Contract described in this guide |
 | --- | --- | --- |
-| Discovery | Root and group bare calls match help; no built-in global schema command; a programmatic schema API remains | Help provides essential invocation and result information; structured export is optional |
+| Command discovery and help | Root and group bare calls show the same help as `--help` | Help provides essential invocation and result information; structured export is optional |
 | Output | Ordinary JSON by default; explicit `--human`, with readable JSON fallback | Same execution regardless of presentation |
 | Error channel | Ordinary success and failure go to stdout; diagnostics go to stderr | Payload output needs a separate failure-channel contract when supported |
 | Output declaration | Optional parser validates successful data; separately supplied output schema is descriptive; help has output summaries | Provide the result structure needed for interpretation and composition; full output structure is not generated from parsers here |
