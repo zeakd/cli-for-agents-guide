@@ -12,14 +12,13 @@ This guide addresses design when choosing a CLI. The choice between CLI, MCP, an
 
 Commands, responses, and file layouts illustrate design choices. Exact command names, field names, and knowledge assembly APIs are not a universal specification.
 
-Compare reference TypeScript behavior against a specific revision. Distinguish features the guide recommends from features the package currently provides, and update coverage as code changes.
+Consult the TypeScript implementation’s current documentation alongside its code. Distinguish features the guide recommends from features the package currently provides, and update coverage as code changes.
 
 ## Reference implementation coverage
 
 The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is one
-concrete example. Its [versioned implementation scope](https://github.com/zeakd/cli-for-ai-ts/blob/58fa2ccda8c04e56bee446a32351f97a53880fd4/docs/scope.md)
-records supported behavior and limits alongside the code. This link is fixed to
-a reviewed revision; later versions may differ. Keep detailed API coverage there
+concrete example. Its [implementation scope](https://github.com/zeakd/cli-for-ai-ts/blob/main/docs/scope.md)
+records supported behavior and limits alongside the code on `main`. Keep detailed API coverage there
 rather than maintaining a second feature table in the guide.
 
 Use the scope document, source declarations and executable examples together when

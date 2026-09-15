@@ -45,6 +45,6 @@ JSON과 사람용 표현, 출력량과 페이지 조회, 부분 실패와 비동
 | [cli-for-ai-ts](https://github.com/zeakd/cli-for-ai-ts) | TypeScript 패키지 `cli-for-ai`와 실행 가능한 예제 |
 | `cli-for-ai-go` — 예정 | Go 구현 |
 
-TypeScript 구현에서 선언·생성된 도움말·입력 검증·결과 처리를 코드로 살펴볼 수 있다. 일부 권고는 현재 지원 범위에 포함되지 않는다. 구현의 지원 여부는 [버전별 지원 범위](guide/ko/08-evidence-and-scope.md#참조-구현의-지원-범위)를 참고한다.
+TypeScript 구현에서 선언·생성된 도움말·입력 검증·결과 처리를 코드로 살펴볼 수 있다. 일부 권고는 현재 지원 범위에 포함되지 않는다. 구현의 지원 여부는 [구현 지원 범위](guide/ko/08-evidence-and-scope.md#참조-구현의-지원-범위)를 참고한다.
 
 라이선스: [MIT](LICENSE)

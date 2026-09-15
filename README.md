@@ -45,6 +45,6 @@ English is canonical; the Korean edition covers the same material.
 | [cli-for-ai-ts](https://github.com/zeakd/cli-for-ai-ts) | TypeScript package `cli-for-ai`, with runnable examples |
 | `cli-for-ai-go` — planned | Go implementation |
 
-The TypeScript implementation illustrates these principles with declarations, generated help, input validation and result handling. Some recommendations remain outside its current scope. See [versioned coverage](guide/en/08-evidence-and-scope.md#reference-implementation-coverage) for implementation support.
+The TypeScript implementation illustrates these principles with declarations, generated help, input validation and result handling. Some recommendations remain outside its current scope. See [implementation coverage](guide/en/08-evidence-and-scope.md#reference-implementation-coverage) for implementation support.
 
 License: [MIT](LICENSE)
