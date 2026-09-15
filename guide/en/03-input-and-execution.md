@@ -21,6 +21,26 @@ Errors identify the offending input and provide the information needed to correc
 
 Shared declarations are useful for generating parsing, validation, and descriptions of ordinary arguments. A custom parser for a specialized expression language must describe its grammar and enforce the same input and error contracts.
 
+## Validation before target lookup
+
+Reject what can be decided from the invocation before locating a session, opening
+a store or contacting a service. If `wait --until provider:sleeping` names a state
+outside a locally known vocabulary, report that input error even when the target
+does not exist. If the vocabulary itself comes from the target, explain that the
+check depends on execution rather than pretending it is local syntax.
+
+A command that accepts one target rejects `read a b` before reading `a`. Do not
+guess that the caller intended a quoted multiword target; identify the extra input
+and the accepted arity. Multiple targets are valid only when the command declares
+them.
+
+Describe incompatible options and dependencies along with individual values.
+Opposing explicit presentation requests should not silently override one another.
+If `--timeout` requires `--wait`, state and check that relationship. Distinguish an
+option being supplied from its effective value: zero and false can be meaningful
+inputs, and a default is not evidence that the caller explicitly supplied an option.
+Exact syntax for declaring these rules belongs to each implementation.
+
 ## Files and stdin
 
 Nested configuration is often easier to handle as a file than as many options.
@@ -37,7 +57,7 @@ Expected: a positive integer
 Received: -1
 ```
 
-Commands supporting stdin describe its format, whether it is required, and when it is read. In this example, `--input-file -` selects stdin.
+Commands supporting stdin describe its format, whether it is required, and when it is read. A call that does not select stdin must not wait for an open input pipe to reach EOF. Validate the invocation first, then read and validate selected input before creating resources for the operation. In this example, `--input-file -` selects stdin.
 
 ```sh
 tool deploy export api |

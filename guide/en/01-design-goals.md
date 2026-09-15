@@ -8,6 +8,23 @@ Designing for attention concerns timing as well as volume. Tool descriptions ent
 
 Providing this guidance does not require the CLI to infer the user's goal. The author defines capabilities and relationships; the CLI fills in values obtained during execution. The calling agent chooses actions according to the user's request.
 
+## Use, authoring and change
+
+The design serves agents using the CLI and agents helping build it. A caller needs
+to find the relevant contract and act without guessing. An author needs to express
+that contract in declarations that are easy to read, compose and check. Maintaining
+the tool adds a third requirement: descriptions and execution must change together.
+
+These goals do not imply maximizing the number of features or the strictness of
+types. A declaration system that requires extensive special knowledge for a simple
+command can make authorship harder. Prefer defaults and checks that prevent likely
+mistakes while leaving ordinary commands straightforward.
+
+Assess a design by the work it removes: unnecessary discovery or calls for the
+user, repeated implementation choices for the author, and opportunities for drift
+when a command changes. The CLI should report what it knows without claiming to
+infer the caller's intent or to know outcomes it did not observe.
+
 ## Defaults and the cost of calling
 
 Defaults have the greatest effect on frequently used paths. If reading ordinary results structurally requires an extra flag, or useful values must be extracted from unnecessarily large output, every invocation adds work.

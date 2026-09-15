@@ -28,6 +28,8 @@ Cover JSON and human presentation, output volume and pagination, partial failure
 
 Generate help and validation from command declarations, and assemble knowledge kept close to features into task guides. Separate decisions from side effects and verify behavior from functions through actual CLI invocations.
 
+The guide considers both the agent using a CLI and the agent building it, including how descriptions and execution stay aligned as the tool changes.
+
 ## Scope
 
 The guide is independent of language and framework. No package is required to apply its principles.
@@ -43,6 +45,6 @@ English is canonical; the Korean edition covers the same material.
 | [cli-for-ai-ts](https://github.com/zeakd/cli-for-ai-ts) | TypeScript package `cli-for-ai`, with runnable examples |
 | `cli-for-ai-go` — planned | Go implementation |
 
-The TypeScript implementation illustrates some principles in code. Its current behavior differs from the guide's recommendations in areas such as JSON defaults and error channels, and some contracts remain unimplemented. See [versioned coverage](guide/en/08-evidence-and-scope.md#reference-implementation-coverage) for the differences.
+The TypeScript implementation illustrates these principles with declarations, generated help, input validation and result handling. Some recommendations remain outside its current scope. See [versioned coverage](guide/en/08-evidence-and-scope.md#reference-implementation-coverage) for implementation support.
 
 License: [MIT](LICENSE)

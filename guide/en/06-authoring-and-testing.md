@@ -6,6 +6,20 @@ Inputs, descriptions, execution, and output formats form a command's definition.
 
 Registries and feature folders are ways to implement this. A command need not fit one file. Organize definitions and usage knowledge so they can be found together when making a change.
 
+## Keep the contract connected when changing a command
+
+A declaration should remove repeated facts, not hide the behavior an author needs
+to understand. Separate domain decisions from parsing and IO so an agent changing
+one rule can find its definition, its explanation and the checks that depend on it.
+Generated help is useful only when its source also controls execution, or when
+independent checks keep the two aligned.
+
+For example, adding a state-name rule should reject invalid names before target
+lookup and describe the accepted form in help. Adding a stdin selection condition
+should change when input is read, how absence is represented, and what help says.
+A result field used by a follow-up command needs an accurate description and an
+example that exercises that connection. Metadata alone does not prove it exists.
+
 ## Assembling usage knowledge
 
 The units used to maintain code can differ from those used to read instructions. Descriptions of `list`, `inspect`, and `logs` are easier to update near their commands, while a caller investigating a failed deployment needs guidance connecting all three. A framework can compose task guides by referencing command declarations and knowledge.
@@ -45,7 +59,7 @@ Represent expected failures in a form that makes complete handling straightforwa
 | Handler or service | Interactions with injected dependencies |
 | Actual CLI | Argument forwarding, configuration loading, output channels, exit codes, persistence |
 
-Actual CLI tests cover connections that function tests cannot establish alone. Stateful tools can use temporary homes; others can use temporary input or test endpoints.
+Actual CLI tests cover connections that function tests cannot establish alone. Include rejection cases: excess positionals must not reach the handler, locally invalid states must not trigger target lookup, and conflicting options must not silently select one branch. For conditional stdin, keep the pipe open and check that a call which does not select it can finish. These tests verify boundaries, not just error wording. Stateful tools can use temporary homes; others can use temporary input or test endpoints.
 
 Review authored usage knowledge and verify its behavioral examples. A skill file's existence or inclusion of a command name does not establish usefulness; mechanical checks alone cannot do that. Mechanical checks can find missing references and incorrect example results. Representative agent tasks reveal whether callers find the needed skill, avoid unrelated skills, construct valid calls, and use known combinations.
 
