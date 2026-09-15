@@ -16,14 +16,15 @@ Compare reference TypeScript behavior against a specific revision. Distinguish f
 
 ## Reference implementation coverage
 
-The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is a concrete example, not a claim that all recommendations here are already implemented. The following snapshot is pinned to [revision 7600bc09c62fed10942bb5f81de69536ef90c145](https://github.com/zeakd/cli-for-ai-ts/tree/7600bc09c62fed10942bb5f81de69536ef90c145). Later revisions may differ.
+The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is a concrete example, not a claim that all recommendations here are already implemented. The following snapshot is pinned to [revision 5a88fff1d5b31416e2f6675e8bb7ab23023706a9](https://github.com/zeakd/cli-for-ai-ts/tree/5a88fff1d5b31416e2f6675e8bb7ab23023706a9). Later revisions may differ.
 
 | Area | Behavior in that revision | Contract described in this guide |
 | --- | --- | --- |
 | Command discovery and help | Root and group bare calls show the same help as `--help` | Help provides essential invocation and result information; structured export is optional |
 | Output | Ordinary JSON by default; explicit `--human`, with readable JSON fallback | Same execution regardless of presentation |
-| Error channel | Ordinary success and failure go to stdout; diagnostics go to stderr | Payload output needs a separate failure-channel contract when supported |
-| Output declaration | Optional parser validates successful data; separately supplied output schema is descriptive; help has output summaries | Provide the result structure needed for interpretation and composition; full output structure is not generated from parsers here |
+| Error channel | Ordinary success and failure go to stdout; identified payload commands report errors on stderr | Keep payload stdout separate from errors and diagnostics |
+| Output declaration | Optional parser validates successful data; separately supplied output schema is descriptive; help has output summaries and authored field descriptions | Provide the result structure needed for interpretation and composition; full output structure is not generated from parsers here |
+| Payload streams | JSONL object records and LF/NUL text records; writes apply backpressure; partial failures report progress on stderr; early reader closure fails the full export | Declare framing, failure channels, completion and early-reader policy; a failed run may leave a partial last record |
 | Input | Unknown, missing and excess inputs fail; declared value and cross-input constraints apply; stdin shape checks precede context creation | Reject input outside the declared contract; help validates supplied inputs without requiring omitted execution inputs |
 | Group routing | Groups show help; unknown commands fail | Groups have no implicit execution |
 | Follow-up actions | Structured result actions and hints are not implemented | Relevant actions and hints can accompany success or failure |
@@ -31,9 +32,9 @@ The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is a con
 | Execution state | Completed, accepted and failed results; reporting failures preserve known returned state; cancellation does not promise rollback | Also distinguish partial and unknown outcomes where operations require them |
 | Authoring and testing | Shared declarations, injected contexts, context disposal and real-process tests | Useful implementation methods, including checks at the CLI boundary |
 
-The broader action, partial-result, and skill contracts are not implemented in this revision and must not be assumed from these chapters. The `tool` commands in this guide are illustrative designs, not executable examples of that package. Field names and exact skill command spelling are left to the implementation; the behavioral distinctions are the guide's recommendations.
+Beyond payload progress reporting, broader action, partial-operation outcome, and skill contracts are not implemented in this revision and must not be assumed from these chapters. The `tool` commands in this guide are illustrative designs, not executable examples of that package. Field names and exact skill command spelling are left to the implementation; the behavioral distinctions are the guide's recommendations.
 
-Use [the pinned sources](https://github.com/zeakd/cli-for-ai-ts/tree/7600bc09c62fed10942bb5f81de69536ef90c145/src) to assess that implementation. Keep coverage claims versioned as code changes. Verify both generated facts and authored examples before describing a behavior as supported.
+Use [the pinned sources](https://github.com/zeakd/cli-for-ai-ts/tree/5a88fff1d5b31416e2f6675e8bb7ab23023706a9/src) to assess that implementation. Keep coverage claims versioned as code changes. Verify both generated facts and authored examples before describing a behavior as supported.
 
 ---
 
