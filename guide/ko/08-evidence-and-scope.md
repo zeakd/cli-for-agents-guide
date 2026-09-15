@@ -16,7 +16,7 @@ TypeScript 참조 구현의 동작은 특정 리비전을 기준으로 비교한
 
 ## 참조 구현의 지원 범위
 
-[TypeScript 구현](https://github.com/zeakd/cli-for-ai-ts)은 구체적인 사례다. 코드와 함께 관리하는 [버전별 구현 지원 범위](https://github.com/zeakd/cli-for-ai-ts/blob/9aa58636c3ae8ef0db57174abb774cc2aa971d62/docs/ko/scope.md)에 지원 동작과 한계를 기록한다. 이 링크는 검토한 리비전에 고정하며 이후 버전은 다를 수 있다. 가이드에 두 번째 기능 표를 유지하기보다 상세 API 지원 범위는 그 문서에서 관리한다.
+[TypeScript 구현](https://github.com/zeakd/cli-for-ai-ts)은 구체적인 사례다. 코드와 함께 관리하는 [버전별 구현 지원 범위](https://github.com/zeakd/cli-for-ai-ts/blob/58fa2ccda8c04e56bee446a32351f97a53880fd4/docs/ko/scope.md)에 지원 동작과 한계를 기록한다. 이 링크는 검토한 리비전에 고정하며 이후 버전은 다를 수 있다. 가이드에 두 번째 기능 표를 유지하기보다 상세 API 지원 범위는 그 문서에서 관리한다.
 
 지원 여부를 평가할 때는 범위 문서, 소스 선언, 실행 가능한 예제를 함께 살펴본다. 가이드가 권하는 동작이라는 사실만으로 참조 패키지의 구현을 증명하지는 않는다. 이 문서의 `tool` 명령은 설계 예시이며 실행 가능한 패키지 API가 아니다. 필드명과 정확한 스킬 명령 이름은 구현이 정한다.
 

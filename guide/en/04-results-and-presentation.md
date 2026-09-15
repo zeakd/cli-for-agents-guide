@@ -19,18 +19,20 @@ Make the payload format and supported presentation options discoverable before i
 
 ## Channels and exit codes
 
-Under the default JSON contract, success and failure results go to stdout. Callers read the result from the same stream in either case. Progress and supplementary diagnostics go to stderr.
-
-Commands whose stdout is a payload send errors to stderr. Inserting an error or success envelope among file bytes or records changes the payload contract and can corrupt the data or make it hard for consumers to distinguish.
+Keep stdout for successful results or declared payload data. Send every failure report to stderr, including unknown commands and invalid arguments before a command is identified. The error channel must not depend on guessing which command the caller intended. This keeps a misspelled export from inserting an error envelope into a data pipeline.
 
 | Output contract | stdout | stderr |
 | --- | --- | --- |
-| Ordinary JSON result | Success or failure result | Progress and supplementary diagnostics |
-| Payload | Data in the declared format | Errors, progress, and supplementary diagnostics |
+| Ordinary JSON result | Successful result | Failure reports, progress and diagnostics |
+| Payload | Data in the declared format | Failure reports, progress and diagnostics |
 
-Once an invocation identifies a payload command, validate arguments, options, and other locally checkable inputs before beginning work or emitting payload. Report those errors on stderr and keep stdout empty. Errors found only while reading or processing data follow the partial-output contract below. For routing failures where no command has been identified, follow the CLI's documented common error contract. Expected failures and unexpected exceptions must both remain recognizable as failures. If stderr includes both errors and diagnostics, describe how to distinguish them rather than promising that the whole stream is one JSON document.
+Validate locally checkable inputs before beginning work or emitting payload. For these rejections, stdout stays empty. Errors found only while reading or processing data follow the partial-output contract below. A JSON export can itself be a payload; JSON syntax does not imply a result envelope. Never insert a failure or completion envelope among payload records unless that record type is part of the declared data format.
 
-A JSON export can itself be a payload; JSON syntax does not imply a result envelope. If a command offers both result envelopes and payload formats, declare the channel contract for each and where invalid format selections are reported. When all formats are payloads, the same stderr error contract applies to all of them.
+Expected failures and unexpected exceptions must both remain recognizable. If stderr carries structured failure reports and diagnostics, define an unambiguous framing for framework-owned output. For example, emit a compact JSON failure report on one physical line and prefix each diagnostic with `diagnostic CODE: ` followed by a JSON-escaped string. Diagnostics may precede or follow a report; do not make the last line special. Human presentation may use a separately documented text error format.
+
+Callers check the producer's exit status and keep stdout and stderr separate. A structured failure report supplies details, not a substitute for exit status. If a report is missing, malformed or ambiguous, preserve the failed status and treat the details as unavailable. Forced termination or a failed report write may produce no report. EOF and an absent error object are not evidence of success.
+
+The implementation must own the output streams for this framing to work. Route library logs and author diagnostics through an explicit diagnostic interface or separate destination. Arbitrary writers can impersonate a structured report; a prefix does not authenticate its source. Combining stderr with stdout also discards channel separation. Document this boundary instead of promising that any mixed output can be parsed reliably.
 
 Failures also use nonzero exit codes. Commands performing several units of work define whether to continue or stop after a failure and report successful, failed, and unprocessed scope. If an attempted unit fails, the default exit status is nonzero. A command promising completed work also must not exit successfully while required units are unprocessed or have unknown outcomes.
 
@@ -72,13 +74,13 @@ tool records export --format jsonl |
   tool records validate --input-format jsonl --input-file -
 ```
 
-Stream producers describe their completion and failure signals. Once bytes are written they cannot be retracted. If production fails, already emitted data remains as a partial prefix, and an output failure or abrupt termination can leave the last record incomplete or lose buffered data. A record-oriented format alone does not guarantee that every record arrives atomically. For detected failures, report the error on stderr and return a nonzero exit status; abrupt termination may prevent that report. Intentional early reader closure follows the separately declared policy below. Do not append an error object to a stream of ordinary records.
+Stream producers describe their completion and failure signals. Once bytes are written they cannot be retracted. If production fails, already emitted data remains as a partial prefix, and an output failure or abrupt termination can leave the last record incomplete or lose buffered data. A record-oriented format alone does not guarantee that every record arrives atomically. For detected failures, report the error on stderr and return a nonzero exit status; abrupt termination may prevent that report. Observed early reader closure follows the separately declared policy below. Do not append an error object to a stream of ordinary records.
 
 End of input does not guarantee producer success. A producer can emit some records and then fail; the consumer may still see only the end of input. Bytes written by the producer also do not prove that the receiver consumed or stored them.
 
 Operations requiring complete input must establish completeness through producer exit status when it guarantees full output, a completion marker outside the data or defined by the declared format, expected counts, or another suitable check. A syntactically complete document alone does not prove that it includes the whole requested scope. Checking pipeline failure status does not undo changes already performed by the consumer. Mutating commands must define whether they validate all input and producer completion before acting, or process items incrementally and report partial results.
 
-A receiver may intentionally stop early, such as when selecting the first few records. Declare how the producer treats a closed pipe and stop unnecessary production while releasing resources. If the producer exits successfully after early reader closure, document that success does not guarantee full output. This is a different contract from an export that promises the entire selected scope. Under that policy, neither producer nor receiver exit status alone proves completeness. Callers needing the whole export require separate evidence, such as expected counts or a declared completion marker, or a command whose success promises the full export.
+A receiver may intentionally stop early, such as when selecting the first few records, or it may crash. A closed pipe alone cannot distinguish those intentions. Declare how the producer treats a closed pipe and stop unnecessary production while releasing resources. If the producer permits early reader closure, required cleanup must still finish successfully before exit 0. An earlier application failure or interruption must not be hidden by the later closure. Document that a permitted closure does not guarantee full output. This is a different contract from an export that promises the entire selected scope. Under that policy, neither producer nor receiver exit status alone proves completeness. Callers needing the whole export require separate evidence, such as expected counts or a declared completion marker, or a command whose success promises the full export.
 
 Help for an export should make the format, record meaning, channels, and completion contract visible together. The following example chooses a full-export contract that treats early reader closure as failure:
 

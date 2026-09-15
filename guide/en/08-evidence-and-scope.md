@@ -17,7 +17,7 @@ Compare reference TypeScript behavior against a specific revision. Distinguish f
 ## Reference implementation coverage
 
 The [TypeScript implementation](https://github.com/zeakd/cli-for-ai-ts) is one
-concrete example. Its [versioned implementation scope](https://github.com/zeakd/cli-for-ai-ts/blob/9aa58636c3ae8ef0db57174abb774cc2aa971d62/docs/scope.md)
+concrete example. Its [versioned implementation scope](https://github.com/zeakd/cli-for-ai-ts/blob/58fa2ccda8c04e56bee446a32351f97a53880fd4/docs/scope.md)
 records supported behavior and limits alongside the code. This link is fixed to
 a reviewed revision; later versions may differ. Keep detailed API coverage there
 rather than maintaining a second feature table in the guide.
